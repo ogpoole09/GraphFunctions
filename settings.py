@@ -34,16 +34,16 @@ def save_settings():
         config["domain"] = "(-∞, ∞)"
         config["range"] = "(-∞, ∞)"
 
-        if selected_posneg.get() == "Positive":
-            config["posneg"] = "Positive"
+        if selected_posneg.get() == "Negative":
+            config["posneg"] = "Negative"
             config["start_point"] = "16, 16"
             x1, y1 = 16, 16
             config["point_1"] = f"{x1 + 1}, {y1 + 1}"
             config["point_2"] = f"{x1 + 8}, {y1 + 2}"
             config["point_3"] = f"{x1 - 1}, {y1 - 1}"
             config["point_4"] = f"{x1 - 8}, {y1 - 2}"
-        elif selected_posneg.get() == "Negative":
-            config["posneg"] = "Negative"
+        elif selected_posneg.get() == "Positive":
+            config["posneg"] = "Positive"
             config["start_point"] = "16, 16"
             x1, y1 = 16, 16
             config["point_1"] = f"{x1 + 1}, {y1 - 1}"
