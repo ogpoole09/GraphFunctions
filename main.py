@@ -11,6 +11,7 @@ def load_settings():
         config = json.load(f)
     
     clear_points()
+    graph_nums(0, 0)
 
     points_to_draw = [
         config["start_point"],
@@ -34,14 +35,29 @@ def load_settings():
     answerCanvas.create_window(300, 15, window=domainLabel, anchor="w")
     rangeLabel.config(text=f"Range: {config["range"]}")
     answerCanvas.create_window(300, 55, window=rangeLabel, anchor="w")
-    vertexLabel.config(text=f"Vertex: {config["vertex"]}")
+    vertexLabel.config(text=f"POI/Vertex: {config["vertex"]}")
     answerCanvas.create_window(90, 15, window=vertexLabel, anchor="w")
 
+    if config["function"] == "Cube Root":
+        x_offset = int(config["horizontal_shift"])
+        y_offset = -int(config["vertical_shift"])
+    elif config["function"] == "Square Root":
+        x_offset = int(config["horizontal_shift"]) + 9
+        y_offset = -int(config["vertical_shift"])
+
+    graph_nums(x_offset, y_offset)
+    draw_origin_axes(-x_offset, -y_offset)
+
 def draw_graph():
-    for i in range(0, 32):
+    for i in range(32):
         lineInt = (i * (407//31)) + 2
         graphCanvas.create_line(lineInt, 0, lineInt, 407, fill="black")
         graphCanvas.create_line(407, lineInt, 0, lineInt, fill="black")
+    
+    for i in range(32):
+        lineInt = (i * (407//31)) + 32
+        dashCanvas.create_line(lineInt, 25, lineInt, 20, fill="black")
+        dashCanvas.create_line(25, lineInt, 20, lineInt, fill="black")
 
 def draw_point(x, y, color):
     x *= 13
@@ -53,9 +69,29 @@ def draw_point(x, y, color):
 def clear_points():
     graphCanvas.delete("graph_point")
 
+def graph_nums(x_offset, y_offset):
+    dashCanvas.delete("axis_label")
+
+    for i in range(-16, 16):
+        x = 32 + (i + 16) * 13
+        dashCanvas.create_text(x, 10, text=str(i + x_offset), font=("Arial", 6), anchor="n", tags="axis_label")
+    
+    for i in range(-16, 16):
+        y = 32 + (i + 16) * 13
+        dashCanvas.create_text(10, y, text=str(-1 * (i + y_offset)), font=("Arial", 6), anchor="e",tags="axis_label")
+
+def draw_origin_axes(x_offset, y_offset):
+    graphCanvas.delete("origin_axis")
+
+    origin_x = ((x_offset + 16) * (407//31)) + 2
+    origin_y = ((y_offset + 16) * (407//31)) + 2
+
+    graphCanvas.create_line(origin_x, 0, origin_x, 407, width=3, fill="black", tags="origin_axis")
+    graphCanvas.create_line(0, origin_y, 407, origin_y, width=3, fill="black", tags="origin_axis")
+
 root = tk.Tk()
 root.title("Graph Functions")
-root.geometry("550x700")
+root.geometry("550x730")
 root.resizable(False, False)
 
 settingsIcon = tk.PhotoImage(file="Images/SettingsIcon.png")
@@ -76,16 +112,19 @@ settingsButton.place(relx=0.085, rely=0.35, anchor="e")
 separator1 = ttk.Separator(root, orient='horizontal')
 separator1.pack(fill='x', padx=20, pady=5)
 
-graphCanvas = tk.Canvas(root, width=404, height=404)
-graphCanvas.pack(pady=(20, 0))
+dashCanvas = tk.Canvas(root, width=454, height=454)
+dashCanvas.pack(pady=10)
+
+graphCanvas = tk.Canvas(dashCanvas, width=404, height=404)
+graphCanvas.pack(pady=30, padx=30)
 
 separator2 = ttk.Separator(root, orient='horizontal')
-separator2.pack(fill='x', padx=20, pady=(30, 5))
+separator2.pack(fill='x', padx=20, pady=5)
 
 answerCanvas = tk.Canvas(root, width=475, height=115)
 answerCanvas.pack(pady=(10, 0))
 
-vertexLabel = tk.Label(answerCanvas, text="Vertex: ", font=("Arial", 10))
+vertexLabel = tk.Label(answerCanvas, text="POI/Vertex: ", font=("Arial", 10))
 answerCanvas.create_window(90, 15, window=vertexLabel, anchor="w")
 
 hsLabel = tk.Label(answerCanvas, text="Horizontal Shift: ", font=("Arial", 10))
@@ -101,4 +140,6 @@ rangeLabel = tk.Label(answerCanvas, text="Range: ", font=("Arial", 10))
 answerCanvas.create_window(300, 55, window=rangeLabel, anchor="w")
 
 draw_graph()
+draw_origin_axes(0, 0)
+graph_nums(0, 0)
 root.mainloop()
