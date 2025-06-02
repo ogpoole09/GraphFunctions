@@ -11,18 +11,17 @@ config["vertex"] = "(0, 0)"
 config["point_intersect"] = "(0, 0)"
 config["h"] = "0"
 config["k"] = "0"
-config["domain"] = "[0, 0]"
-config["range"] = "[0, 0]"
-config["start_point"] = "0, 0"
-config["point_1"] = "0, 0"
-config["point_2"] = "0, 0"
-config["point_3"] = "0, 0"
-config["point_4"] = "0, 0"
-config["point_5"] = "0, 0"
-config["point_6"] = "0, 0"
+config["domain"] = "(-∞, ∞)"
+config["range"] = "[0, ∞)"
+config["start_point"] = "16, 23"
+config["point_1"] = "17, 22"
+config["point_2"] = "18, 19"
+config["point_3"] = "19, 14"
+config["point_4"] = "15, 22"
+config["point_5"] = "14, 19"
+config["point_6"] = "13, 14"
 config["function"] = "Quadratic"
 config["posneg"] = "Positive"
-
 
 with open("Data/config.json", "w") as f:
         json.dump(config, f, indent=4)
@@ -38,7 +37,7 @@ def load_settings():
     clear_dashline()
     graph_nums(0, 0)
 
-    if config["function"] == "Rational" or config["function"] == "Absolute Value":
+    if config["function"] == "Rational" or config["function"] == "Absolute Value" or config["function"] == "Quadratic":
         points_to_draw = [
             config["start_point"],
             config["point_1"],
@@ -174,6 +173,10 @@ def load_settings():
     else:
         graph_nums(x_offset, y_offset)
         draw_origin_axes(-x_offset, -y_offset)
+    
+    function_line()
+    graphCanvas.tag_raise("graph_point")
+    graphCanvas.tag_raise("graph_img")
 
 def draw_graph():
     for i in range(32):
@@ -249,6 +252,70 @@ def draw_origin_axes(x_offset, y_offset):
     else:
         return
 
+def open_help():
+    subprocess.Popen(["python", "help.py"])
+
+def open_creds():
+    subprocess.Popen(["python", "creds.py"])
+
+lineImg = None
+lineImg1 = None
+
+def function_line():
+    global lineImg, lineImg1
+
+    graphCanvas.delete("graph_img")
+
+    with open("Data/config.json", "r") as f:
+        config = json.load(f)
+
+    if config["function"] == "Quadratic":
+        if config["posneg"] == "Positive":
+            lineImg = tk.PhotoImage(file="Images/Functions/QuadraticPos.png")
+            graphCanvas.create_image(211.5, 165, image=lineImg, tags="graph_img")
+        elif config["posneg"] == "Negative":
+            lineImg = tk.PhotoImage(file="Images/Functions/QuadraticNeg.png")
+            graphCanvas.create_image(211.5, 255, image=lineImg, tags="graph_img")
+    elif config["function"] == "Cubic":
+        if config["posneg"] == "Positive":
+            lineImg = tk.PhotoImage(file="Images/Functions/CubicPos.png")
+            graphCanvas.create_image(208, 213, image=lineImg, tags="graph_img")
+        elif config["posneg"] == "Negative":
+            lineImg = tk.PhotoImage(file="Images/Functions/CubicNeg.png")
+            graphCanvas.create_image(213, 213, image=lineImg, tags="graph_img")
+    elif config["function"] == "Absolute Value":
+        if config["posneg"] == "Positive":
+            lineImg = tk.PhotoImage(file="Images/Functions/AbsolutePos.png")
+            graphCanvas.create_image(210, 95, image=lineImg, tags="graph_img")
+        elif config["posneg"] == "Negative":
+            lineImg = tk.PhotoImage(file="Images/Functions/AbsoluteNeg.png")
+            graphCanvas.create_image(210, 326, image=lineImg, tags="graph_img")
+    elif config["function"] == "Square Root":
+        if config["posneg"] == "Positive":
+            lineImg = tk.PhotoImage(file="Images/Functions/SqrtPos.png")
+            graphCanvas.create_image(238, 175, image=lineImg, tags="graph_img")
+        elif config["posneg"] == "Negative":
+            lineImg = tk.PhotoImage(file="Images/Functions/SqrtNeg.png")
+            graphCanvas.create_image(238, 246, image=lineImg, tags="graph_img")
+    elif config["function"] == "Cube Root":
+        if config["posneg"] == "Positive":
+            lineImg = tk.PhotoImage(file="Images/Functions/CurtPos.png")
+            graphCanvas.create_image(208, 213, image=lineImg, tags="graph_img")
+        elif config["posneg"] == "Negative":
+            lineImg = tk.PhotoImage(file="Images/Functions/CurtNeg.png")
+            graphCanvas.create_image(213, 213, image=lineImg, tags="graph_img")
+    elif config["function"] == "Rational":
+        if config["posneg"] == "Positive":
+            lineImg = tk.PhotoImage(file="Images/Functions/RationalPos1.png")
+            graphCanvas.create_image(202, 200, image=lineImg, tags="graph_img")
+            lineImg1 = tk.PhotoImage(file="Images/Functions/RationalPos2.png")
+            graphCanvas.create_image(208, 195, image=lineImg1, tags="graph_img")
+        elif config["posneg"] == "Negative":
+            lineImg = tk.PhotoImage(file="Images/Functions/RationalNeg1.png")
+            graphCanvas.create_image(211, 209, image=lineImg, tags="graph_img")
+            lineImg1 = tk.PhotoImage(file="Images/Functions/RationalNeg2.png")
+            graphCanvas.create_image(204, 205, image=lineImg1, tags="graph_img")
+
 root = tk.Tk()
 root.title("Graph Functions")
 root.geometry("550x730")
@@ -257,18 +324,29 @@ root.iconbitmap("Images/icon.ico")
 
 settingsIcon = tk.PhotoImage(file="Images/SettingsIcon.png")
 loadIcon = tk.PhotoImage(file="Images/LoadIcon.png")
+helpIcon = tk.PhotoImage(file="Images/HelpIcon.png")
+credsIcon = tk.PhotoImage(file="Images/CredsIcon.png")
 
 titleCanvas = tk.Canvas(root, width=550, height=75)
 titleCanvas.pack()
 
 title = tk.Label(titleCanvas, text="Graph Functions", font=("Arial", 24, "bold"))
-title.place(relx=0.5, rely=0.5, anchor="center")
+title.place(relx=0.5, rely=0.4, anchor="center")
 
-loadButton = tk.Button(titleCanvas, image=settingsIcon, cursor="hand2", command=open_settings)
-loadButton.place(relx=0.98, rely=0.35, anchor="e")
+subtitle = tk.Label(titleCanvas, text="Made By: Oliver Poole", font=("Arial", 9, "bold"))
+subtitle.place(relx=0.5, rely=0.75, anchor="center")
 
-settingsButton = tk.Button(titleCanvas, image=loadIcon, cursor="hand2", command=load_settings)
-settingsButton.place(relx=0.085, rely=0.35, anchor="e")
+settingsButton = tk.Button(titleCanvas, image=settingsIcon, cursor="hand2", command=open_settings)
+settingsButton.place(relx=0.17, rely=0.35, anchor="e")
+
+loadButton = tk.Button(titleCanvas, image=loadIcon, cursor="hand2", command=load_settings)
+loadButton.place(relx=0.085, rely=0.35, anchor="e")
+
+helpButton = tk.Button(titleCanvas, image=helpIcon, cursor="hand2", command=open_help)
+helpButton.place(relx=0.895, rely=0.35, anchor="e")
+
+creditsButton = tk.Button(titleCanvas, image=credsIcon, cursor="hand2", command=open_creds)
+creditsButton.place(relx=0.98, rely=0.35, anchor="e")
 
 separator1 = ttk.Separator(root, orient='horizontal')
 separator1.pack(fill='x', padx=20, pady=5)
@@ -285,7 +363,7 @@ separator2.pack(fill='x', padx=20, pady=5)
 answerCanvas = tk.Canvas(root, width=475, height=115)
 answerCanvas.pack(pady=(10, 0))
 
-Label1 = tk.Label(answerCanvas, text="P.O.I.: ", font=("Arial", 10))
+Label1 = tk.Label(answerCanvas, text="Vertex: ", font=("Arial", 10))
 answerCanvas.create_window(90, 15, window=Label1, anchor="w")
 
 Label2 = tk.Label(answerCanvas, text="Horizontal Shift: ", font=("Arial", 10))
@@ -300,7 +378,7 @@ answerCanvas.create_window(300, 15, window=Label4, anchor="w")
 Label5 = tk.Label(answerCanvas, text="Range: ", font=("Arial", 10))
 answerCanvas.create_window(300, 55, window=Label5, anchor="w")
 
-Label6 = tk.Label(answerCanvas, text="", font=("Arial", 10))
+Label6 = tk.Label(answerCanvas, text="A.o.S.: ", font=("Arial", 10))
 answerCanvas.create_window(300, 95, window=Label6, anchor="w")
 
 draw_graph()
