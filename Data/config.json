@@ -8,10 +8,10 @@
     "start_point": "16, 23",
     "point_1": "17, 22",
     "point_2": "18, 19",
-    "point_3": "15, 22",
-    "point_4": "14, 19",
-    "point_5": "0, 0",
-    "point_6": "0, 0",
+    "point_3": "19, 14",
+    "point_4": "15, 22",
+    "point_5": "14, 19",
+    "point_6": "13, 14",
     "function": "Quadratic",
     "posneg": "Positive"
 }
