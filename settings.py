@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 import json
 
 with open("Data/config.json", "r") as f:
@@ -89,8 +90,10 @@ def save_settings():
             x3, y3 = 16, 23
             config["point_1"] = f"{x3 + 1}, {y3 - 1}"
             config["point_2"] = f"{x3 + 2}, {y3 - 4}"
-            config["point_3"] = f"{x3 - 1}, {y3 - 1}"
-            config["point_4"] = f"{x3 - 2}, {y3 - 4}"
+            config["point_3"] = f"{x3 + 3}, {y3 - 9}"
+            config["point_4"] = f"{x3 - 1}, {y3 - 1}"
+            config["point_5"] = f"{x3 - 2}, {y3 - 4}"
+            config["point_6"] = f"{x3 - 3}, {y3 - 9}"
             config["range"] = f"[{k_entry.get()}, ∞)"
         elif selected_posneg.get() == "Negative":
             config["posneg"] = "Negative"
@@ -98,8 +101,10 @@ def save_settings():
             x3, y3 = 16, 9
             config["point_1"] = f"{x3 + 1}, {y3 + 1}"
             config["point_2"] = f"{x3 + 2}, {y3 + 4}"
-            config["point_3"] = f"{x3 - 1}, {y3 + 1}"
-            config["point_4"] = f"{x3 - 2}, {y3 + 4}"
+            config["point_3"] = f"{x3 + 3}, {y3 + 9}"
+            config["point_4"] = f"{x3 - 1}, {y3 + 1}"
+            config["point_5"] = f"{x3 - 2}, {y3 + 4}"
+            config["point_6"] = f"{x3 - 3}, {y3 + 9}"
             config["range"] = f"(-∞, {k_entry.get()}]"
 
     elif selected_function.get() == "Cubic":
@@ -158,6 +163,11 @@ def save_settings():
 
     with open("Data/config.json", "w") as f:
         json.dump(config, f, indent=4)
+    
+    saveLabel.config(text="Settings Saved")
+    saveLabel.pack(pady=10)
+    root.after(2000, lambda: saveLabel.config(text=""))
+    saveLabel.pack(pady=10)
 
 root = tk.Tk()
 root.title("Settings")
@@ -165,8 +175,11 @@ root.geometry("500x400")
 root.resizable(False, False)
 root.iconbitmap("Images/SettingsIcon.ico")
 
-label = tk.Label(root, text="Settings Page", font=("Arial", 24, "bold"))
-label.pack(pady=20)
+label = tk.Label(root, text="Settings", font=("Arial", 24, "bold"))
+label.pack(pady=10)
+
+separator1 = ttk.Separator(root, orient='horizontal')
+separator1.pack(fill='x', padx=20, pady=10)
 
 functionList = ["Quadratic", "Cubic", "Absolute Value", "Square Root", "Cube Root", "Rational"]
 
@@ -205,6 +218,9 @@ k_entry.insert(0, config["k"])
 k_entry.pack(pady=(0, 10))
 
 saveButton = tk.Button(root, text="Save Settings", cursor="hand2", command=save_settings)
-saveButton.pack(pady=(30, 0))
+saveButton.pack(pady=(20, 0))
+
+saveLabel = tk.Label(root, text="", font=("Arial", 8), fg="#1BDE18")
+saveLabel.pack(pady=10)
 
 root.mainloop()
