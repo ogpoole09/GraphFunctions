@@ -1,2 +1,8 @@
 # GraphFunctions
-To use, press on the settings button (top right) to add your data, then press the load button (top left) to load the graph. 
+## How to use program
+
+## Packages for python code
+'''
+pip install tk
+pip install numpy
+'''
